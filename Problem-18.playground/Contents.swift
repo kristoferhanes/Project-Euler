@@ -2,7 +2,7 @@
 import UIKit
 
 
-println(solution())
+print(solution())
 
 
 

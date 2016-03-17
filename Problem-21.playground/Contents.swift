@@ -7,5 +7,5 @@ areAmicable(220, 284)
 
 let solution = amicableNumbersInRange(1..<10000)
   .reduce(0, combine: +)
-println(solution)
+print(solution)
 

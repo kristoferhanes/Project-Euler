@@ -41,7 +41,7 @@ extension Direction {
 }
 
 extension Direction {
-  func adjVals(#x: Int, y: Int) -> [(Int,Int)] {
+  func adjVals(x x: Int, y: Int) -> [(Int,Int)] {
     switch self {
     case Down:
       return [(x,y),(x,y+1),(x,y+2),(x,y+3)]
@@ -75,7 +75,7 @@ public struct Grid<T> {
     get { return valueAt(x: p.x, y: p.y) }
   }
 
-  func valueAt(#x: Int, y: Int) -> T? {
+  func valueAt(x x: Int, y: Int) -> T? {
     if outOfRange(x, y) { return nil }
     return grid[x * rows + y]
   }

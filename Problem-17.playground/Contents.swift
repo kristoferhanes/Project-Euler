@@ -19,9 +19,9 @@ func toWords(xs: [Int]) -> String {
   case 2: return twoDigitsToWords(xs[0]+xs[1]*10)
   case 3: return (xs.last != 0 ? onesToWord(xs.last!) + " hundred " : "")
     + (xs[0] == 0 && xs[1] == 0 ? "" : "and ")
-    + toWords([Int](dropLast(xs)))
+    + toWords([Int](xs.dropLast()))
   case 4: return (xs.last != 0 ? onesToWord(xs.last!) + " thousand " : "")
-    + toWords([Int](dropLast(xs)))
+    + toWords([Int](xs.dropLast()))
   default: return ""
   }
 }
@@ -89,7 +89,7 @@ toWords(toDigits(1042))
 
 
 func countLetters(s: String) -> Int {
-  return Array(s).reduce(0) { count, x in
+  return s.characters.reduce(0) { count, x in
     switch x {
     case "a"..."z", "A"..."Z": return count + 1
     default: return count

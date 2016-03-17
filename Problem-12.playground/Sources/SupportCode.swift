@@ -3,7 +3,7 @@
 import Foundation
 
 extension Set {
-  func map<U>(transform: T->U) -> Set<U> {
+  func map<U>(transform: Element->U) -> Set<U> {
     var result = Set<U>()
     for x in self {
       result.insert(transform(x))
@@ -21,7 +21,7 @@ func lowFactors(number: Int) -> Set<Int> {
   for divisor in divisors {
     if divisor == 0 { continue }
     if number % divisor != 0 {
-      for i in stride(from: divisor, to: divisors.endIndex, by: divisor) {
+      for i in divisor.stride(to: divisors.endIndex, by: divisor) {
         divisors[i] = 0
       }
     }
@@ -39,14 +39,14 @@ func factors(number: Int) -> Set<Int> {
   return lf.union(hf)
 }
 
-public func firstWith500Divisors(var xs: GeneratorOf<Int>) -> Int? {
+public func firstWith500Divisors(xs: AnyGenerator<Int>) -> Int? {
   for x in xs {
     if factors(x).count > 500 { return x }
   }
   return nil
 }
 
-public var triangleNums = GeneratorOf<Int> { () -> Int? in
+public var triangleNums: AnyGenerator<Int> = anyGenerator {
   struct State {
     static var index = 1
     static var next = 0

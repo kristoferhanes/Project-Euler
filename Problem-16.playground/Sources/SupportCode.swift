@@ -4,7 +4,7 @@
 func mulBy2(var xs: [Int]) -> [Int] {
   var carry = 0
 
-  for i in indices(xs) {
+  for i in xs.indices {
     let digit = xs[i] * 2 + carry
     carry = digit / 10
     xs[i] = digit % 10
@@ -18,7 +18,7 @@ func mulBy2(var xs: [Int]) -> [Int] {
 func powersOfTwo(n: Int) -> [Int] {
   var result = [1]
 
-  for i in 1...n {
+  for _ in 1...n {
     result = mulBy2(result)
   }
 

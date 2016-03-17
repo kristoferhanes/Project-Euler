@@ -36,7 +36,7 @@ extension LongInt {
   }
 }
 
-extension LongInt: Printable {
+extension LongInt: CustomStringConvertible {
   var description: String {
     let ds = digits.reverse()
     var result = [Character]()
@@ -63,7 +63,7 @@ factorial(10).digits.reduce(0, combine: +) == 27
 
 
 let solution = factorial(100).digits.reduce(0, combine: +)
-println(solution)
+print(solution)
 
 
 

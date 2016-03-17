@@ -23,7 +23,7 @@ func isPrime(n: Int) -> Bool {
     if divisor == 0 { continue }
     if n % divisor == 0 { return false }
     else {
-      for i in stride(from: divisor, to: divisors.endIndex+2, by: divisor) {
+      for i in divisor.stride(to: divisors.endIndex+2, by: divisor) {
         divisors[i-2] = 0
       }
     }

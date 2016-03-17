@@ -60,7 +60,7 @@ enum Direction { case Left, Right }
 
 extension Direction { static let Values: [Direction] = [.Left,.Right] }
 
-extension Direction: Printable {
+extension Direction: CustomStringConvertible {
   var description: String {
     switch self {
     case .Left: return "Left"
@@ -69,7 +69,7 @@ extension Direction: Printable {
   }
 }
 
-func permutations<T>(values: [T], xs: [T], length: Int) -> [[T]] {
+func permutations<T>(values: [T], _ xs: [T], _ length: Int) -> [[T]] {
   if length <= 0 { return [xs] }
   var result = [[T]]()
   for i in values {

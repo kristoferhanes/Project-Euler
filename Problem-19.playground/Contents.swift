@@ -18,7 +18,7 @@ enum Month: Int {
   case Dec
 }
 
-extension Month: Printable {
+extension Month: CustomStringConvertible {
   var description: String {
     switch self {
     case .Jan: return "January"
@@ -73,7 +73,7 @@ enum Weekday: Int {
   case Sunday
 }
 
-extension Weekday: Printable {
+extension Weekday: CustomStringConvertible {
   var description: String {
     switch self {
     case .Monday: return "Monday"
@@ -144,7 +144,7 @@ let years = [Year](1901...2000)
 
 
 let solution = firstSundaysInYears(years)
-println(solution)
+print(solution)
 
 
 

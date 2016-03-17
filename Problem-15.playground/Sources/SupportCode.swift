@@ -12,7 +12,7 @@ public struct Grid {
 
 extension Grid: Hashable {
   public var hashValue: Int {
-    return 31 &* w.hashValue + h.hashValue
+    return 31 &* w.hashValue &+ h.hashValue
   }
 }
 

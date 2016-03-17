@@ -4,14 +4,14 @@ import UIKit
 let path = "/Users/kristoferhanes/Dropbox/Developer/Project Euler/Problem-22.playground/Resources/names.txt"
 
 func removeQuotes(s: String) -> String {
-  if count(s) < 2 { return s }
-  if first(s) != "\"" || last(s) != "\"" { return s }
-  let range = advance(s.startIndex,1)..<advance(s.startIndex,count(s)-1)
+  if s.characters.count < 2 { return s }
+  if s.characters.first != "\"" || s.characters.last != "\"" { return s }
+  let range = s.startIndex.advancedBy(1)..<s.startIndex.advancedBy(s.characters.count-1)
   return s.substringWithRange(range)
 }
 
 func namesFromFile(path: String) -> [String] {
-  return String(contentsOfFile: path)?.componentsSeparatedByString(",").map(removeQuotes) ?? []
+  return (try? String(contentsOfFile: path))?.characters.split(",").map { removeQuotes(String($0)) } ?? []
 }
 
 func charValue(c: Character) -> Int {
@@ -26,18 +26,18 @@ func charValue(c: Character) -> Int {
 }
 
 func alphaValue(s: String) -> Int {
-  return Array(s.uppercaseString).map(charValue).reduce(0, combine: +)
+  return s.uppercaseString.characters.map(charValue).reduce(0, combine: +)
 }
 
 removeQuotes("\"hello\"") == "hello"
 alphaValue("colin") == 53
 
-let solution = Array(enumerate(namesFromFile(path).sorted(<)))
+let solution = namesFromFile(path).sort(<).enumerate()
   .map { ($0.index+1, alphaValue($0.element)) }
   .map { $0.0 * $0.1 }
   .reduce(0, combine: +)
 
 
-println(solution)
+print(solution)
 
 

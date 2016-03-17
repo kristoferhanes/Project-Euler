@@ -18,7 +18,7 @@ extension Int {
     for x in sieve {
       if x == 0 { continue }
       if self % x != 0 {
-        for i in stride(from: x, to: sieve.endIndex, by: x) {
+        for i in x.stride(to: sieve.endIndex, by: x) {
           sieve[i] = 0
         }
       }
@@ -35,7 +35,7 @@ extension Int {
   }
 }
 
-public func areAmicable(a: Int, b: Int) -> Bool {
+public func areAmicable(a: Int, _ b: Int) -> Bool {
   let sumA = [Int](a.properDivisors).reduce(0, combine: +)
   let sumB = [Int](b.properDivisors).reduce(0, combine: +)
   return sumA == b && sumB == a

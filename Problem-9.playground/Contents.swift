@@ -1,7 +1,7 @@
 
 import UIKit
 
-func isPyth(a: Int, b: Int, c: Int) -> Bool {
+func isPyth(a: Int, _ b: Int, _ c: Int) -> Bool {
   return a*a + b*b == c*c
 }
 

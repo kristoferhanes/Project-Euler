@@ -4,7 +4,7 @@ public struct Natural {
 
   public init(var _ value: Int) {
     var initDigits = [Int]()
-    do {
+    repeat {
       initDigits.append(value % 10)
       value /= 10
     } while value > 0

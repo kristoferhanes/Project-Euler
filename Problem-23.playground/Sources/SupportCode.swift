@@ -17,7 +17,7 @@ func memoize<T: Hashable, U>(body: ((T)->U,T)->U) -> (T)->U {
 }
 
 private func sum(set: Set<Int>) -> Int {
-  return reduce(set, 0, +)
+  return set.reduce(0, combine: +)
 }
 
 extension Int {
@@ -26,15 +26,16 @@ extension Int {
   }
 }
 
-private func lowFactorsOf(number: Int, remaining: ArraySlice<Int>) -> Set<Int> {
+private func lowFactorsOf(number: Int, _ remaining: ArraySlice<Int>) -> Set<Int> {
   if remaining.isEmpty { return [] }
   let (divisor, tail) = (remaining.first!, remaining[1..<remaining.count])
-  return number.isDivisibleBy(divisor) ? lowFactorsOf(number, tail).union([divisor]) :
-    lowFactorsOf(number, tail.filter { x in !x.isDivisibleBy(divisor) })
+  return number.isDivisibleBy(divisor)
+    ? lowFactorsOf(number, tail).union([divisor])
+    : lowFactorsOf(number, ArraySlice(tail.filter { x in !x.isDivisibleBy(divisor) }))
 }
 
 private func highFactorsOf(number: Int, fromLowFactors factors: Set<Int>) -> Set<Int> {
-  return Set(map(factors) { x in number / x })
+  return Set(factors.map { x in number / x })
 }
 
 private func sqrt(number: Int) -> Int {
@@ -65,7 +66,7 @@ public func isDeficient(number: Int) -> Bool {
   return sumOfFactors(number) - number < number
 }
 
-public enum NumberClassifier: Printable {
+public enum NumberClassifier: CustomStringConvertible {
 
   case Perfect(Int)
   case Abundant(Int)
