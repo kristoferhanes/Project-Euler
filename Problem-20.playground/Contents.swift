@@ -10,8 +10,9 @@ extension LongInt {
     digits = LongInt.split(value)
   }
 
-  static func split(var n: Int) -> [Int] {
-    var result = [Int]()
+  static func split(n: Int) -> [Int] {
+    var n = n
+    var result: [Int] = []
     while n > 0 {
       result.append(n % 10)
       n /= 10
@@ -20,7 +21,7 @@ extension LongInt {
   }
 
   func times(n: Int) -> LongInt {
-    var result = [Int]()
+    var result: [Int] = []
     var carry = 0
     for x in digits {
       let product = x * n + carry
@@ -39,7 +40,7 @@ extension LongInt {
 extension LongInt: CustomStringConvertible {
   var description: String {
     let ds = digits.reverse()
-    var result = [Character]()
+    var result: [Character] = []
     for d in ds {
       result.append(Character(String(d)))
     }

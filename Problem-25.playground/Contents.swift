@@ -14,10 +14,9 @@ func fibs(index: Int) -> Natural {
 var index = 5000
 var digitCount = 0
 repeat {
-  index--
+  index -= 1
   digitCount = fibs(index).digits.count
   print("index: \(index), digitCount: \(digitCount)")
 } while digitCount > 999
 
 index
-

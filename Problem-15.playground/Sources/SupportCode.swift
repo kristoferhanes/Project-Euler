@@ -25,8 +25,7 @@ public func paths(grid: Grid) -> Int {
 
   if let p = Memo.paths[grid] { return p }
   if grid.w == 0 || grid.h == 0 { return 1 }
-  let result
-    = paths(Grid(w: grid.w - 1, h: grid.h))
+  let result = paths(Grid(w: grid.w - 1, h: grid.h))
     + paths(Grid(w: grid.w, h: grid.h - 1))
   Memo.paths[grid] = result
   return result

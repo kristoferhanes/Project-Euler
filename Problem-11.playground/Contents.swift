@@ -68,22 +68,19 @@ public struct Grid<T> {
   }
 
   subscript(x: Int, y: Int) -> T? {
-    get { return valueAt(x: x, y: y) }
-  }
 
-  subscript(p: Point) -> T? {
-    get { return valueAt(x: p.x, y: p.y) }
-  }
+    func outOfRange(x: Int, _ y: Int) -> Bool {
+      if x < 0 || cols <= x { return true }
+      if y < 0 || rows <= y { return true }
+      return false
+    }
 
-  func valueAt(x x: Int, y: Int) -> T? {
     if outOfRange(x, y) { return nil }
     return grid[x * rows + y]
   }
 
-  private func outOfRange(x: Int, _ y: Int) -> Bool {
-    if x < 0 || cols <= x { return true }
-    if y < 0 || rows <= y { return true }
-    return false
+  subscript(p: Point) -> T? {
+    return self[x: p.x, y: p.y]
   }
 }
 
@@ -93,10 +90,7 @@ extension Grid {
     for x in 0..<cols {
       for y in 0..<rows {
         for direction in Direction.Values {
-          let adjs = direction.adjVals(x: x, y: y)
-            .map { self[$0.0, $0.1] }
-            .filter { $0 != nil }
-            .map { $0! }
+          let adjs = direction.adjVals(x: x, y: y).flatMap{self[$0.0, $0.1]}
           result.append(adjs)
         }
       }
@@ -105,17 +99,13 @@ extension Grid {
   }
 }
 
-func products(xss: [[Int]]) -> [Int] {
-  return xss.map { xs in xs.reduce(1, combine: *) }
-}
-
-func max<T: Comparable>(xs: [T]) -> T? {
-  if xs.isEmpty { return nil }
-  return xs.reduce(xs.first!) { max, x in x > max ? x : max }
-}
-
 func maxProduct(grid: Grid<Int>) -> Int? {
-  return max(products(grid.adjVals))
+
+  func products(xss: [[Int]]) -> [Int] {
+    return xss.map { xs in xs.reduce(1, combine: *) }
+  }
+
+  return products(grid.adjVals).maxElement()
 }
 
 let grid = Grid(

@@ -1,6 +1,7 @@
 
 
-public func permutions<T>(var xs: [T]) -> [[T]] {
+public func permutions<T>(xs: [T]) -> [[T]] {
+  var xs = xs
   if xs.count <= 1 { return [xs] }
   var result = [[T]]()
   for (i, e) in xs.enumerate() {
@@ -19,4 +20,3 @@ public let perms = permutions([0,1,2,3,4,5,6,7,8,9])
   .map { xs in xs.map { x in Character("\(x)") } }
   .map { xs in String(xs) }
   .sort(<)
-

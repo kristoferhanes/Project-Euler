@@ -1,7 +1,8 @@
 
 import UIKit
 
-func toDigits(var n: Int) -> [Int] {
+func toDigits(n: Int) -> [Int] {
+  var n = n
   var result = [Int]()
   while n > 0 {
     result.append(n % 10)
@@ -100,12 +101,8 @@ func countLetters(s: String) -> Int {
 countLetters("three hundred and forty-two") == 23
 countLetters("one hundred and fifteen") == 20
 
-func sum(xs: [Int]) -> Int {
-  return xs.reduce(0, combine: +)
-}
-
 func letterCounter(xs: [Int]) -> Int {
-  return sum(xs.map { countLetters(toWords(toDigits($0))) })
+  return xs.map { countLetters(toWords(toDigits($0))) }.reduce(0, combine: +)
 }
 
 letterCounter([Int](1...5)) == 19

@@ -48,8 +48,8 @@ private func getFactors(number: Int) -> Set<Int> {
   return lowFactors.union(highFactors)
 }
 
-let factorsOf = memoize { factorsOf, x in getFactors(x) }
-let sumOfFactors = memoize { sumOfFactors, x in sum(factorsOf(x)) }
+let factorsOf = memoize { _, x in getFactors(x) }
+let sumOfFactors = memoize { _, x in sum(factorsOf(x)) }
 
 public func isPerfect(number: Int) -> Bool {
   if !isNaturalNumber(number) { return false }

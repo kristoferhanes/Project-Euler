@@ -1,7 +1,8 @@
 
 
 
-func mulBy2(var xs: [Int]) -> [Int] {
+func mulBy2(xs: [Int]) -> [Int] {
+  var xs = xs
   var carry = 0
 
   for i in xs.indices {

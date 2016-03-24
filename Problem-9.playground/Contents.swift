@@ -18,7 +18,7 @@ func pythWithSum(sum: Int) -> (Int,Int,Int)? {
 }
 
 func productOfPythWithSum(sum: Int) -> Int? {
-  return pythWithSum(sum).map { (a, b, c) in a * b * c }
+  return pythWithSum(sum).map { $0 * $1 * $2 }
 }
 
 

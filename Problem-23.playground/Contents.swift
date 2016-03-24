@@ -13,4 +13,3 @@ let nonSums = numbers.filter { !sums.contains($0) }
 
 let solution = nonSums.reduce(0, combine: +)
 print(solution)
-

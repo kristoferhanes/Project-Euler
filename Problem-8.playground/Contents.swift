@@ -5,36 +5,36 @@ let digits = "731671765313306249192251196744265747423553491949349698352031277450
   .characters.map { Int(String($0))! }
 
 extension Array {
-  func split(length: Int) -> [[Element]] {
-    var result = [[Element]]()
+  func split(length: Int) -> [ArraySlice<Element>] {
+    var result: [ArraySlice<Element>] = []
     for i in startIndex..<endIndex-length {
-      result.append([Element](self[i..<i+length]))
+      result.append(self[i..<i+length])
     }
     return result
   }
 }
 
-func adjDigits(n: Int, _ xs: [Int]) -> [[Int]] {
+func adjDigits(n: Int, _ xs: [Int]) -> [ArraySlice<Int>] {
   return xs.split(n)
 }
 
-func adjDigitsProducts(xss: [[Int]]) -> [(Int,[Int])] {
-  typealias Element = (Int,[Int])
-  var result = [Element]()
+func adjDigitsProducts(xss: [ArraySlice<Int>]) -> [(Int,ArraySlice<Int>)] {
+  typealias Element = (Int,ArraySlice<Int>)
+  var result: [Element] = []
   for xs in xss {
     let product = xs.reduce(1, combine: *)
-    let x: Element = (product, xs)
+    let x = (product, xs)
     result.append(x)
   }
   return result
 }
 
-func maxAdjDigitsProducts(xs: [(Int,[Int])]) -> (Int,[Int])? {
+func maxAdjDigitsProducts(xs: [(Int,ArraySlice<Int>)]) -> (Int,ArraySlice<Int>)? {
   return xs.reduce(nil) { max, x in x.0 > max?.0 ? x : max }
 }
 
-func solution(n: Int, _ xs: [Int]) -> (Int,[Int])? {
-  return maxAdjDigitsProducts(adjDigitsProducts(adjDigits(n, xs)))
+func solution(n: Int, _ xs: [Int]) -> (Int,ArraySlice<Int>)? {
+  return adjDigitsProducts(adjDigits(n, xs)).maxElement{$0.0<$1.0}
 }
 
 let test = solution(4, digits)
@@ -43,7 +43,3 @@ test?.0 == 5832
 
 let sol = solution(13, digits)
 sol
-
-
-
-

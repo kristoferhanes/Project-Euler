@@ -46,12 +46,13 @@ public func firstWith500Divisors(xs: AnyGenerator<Int>) -> Int? {
   return nil
 }
 
-public var triangleNums: AnyGenerator<Int> = anyGenerator {
+public var triangleNums: AnyGenerator<Int> = AnyGenerator {
   struct State {
     static var index = 1
     static var next = 0
   }
 
-  State.next += State.index++
+  State.next += State.index
+  State.index += 1
   return State.next
 }

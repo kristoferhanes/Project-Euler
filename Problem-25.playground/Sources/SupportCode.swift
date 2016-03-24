@@ -2,8 +2,9 @@
 public struct Natural {
   public let digits: [Int]
 
-  public init(var _ value: Int) {
-    var initDigits = [Int]()
+  public init(_ value: Int) {
+    var value = value
+    var initDigits: [Int] = []
     repeat {
       initDigits.append(value % 10)
       value /= 10
@@ -16,21 +17,20 @@ public struct Natural {
   }
 }
 
-public func + (lhs: Natural, rhs: Natural) -> Natural {
-  let (shorter, longer) = lhs.digits.count < rhs.digits.count
-    ? (lhs.digits, rhs.digits)
-    : (rhs.digits, lhs.digits)
+public func + (shorter: Natural, longer: Natural) -> Natural {
+  guard shorter.digits.count <= longer.digits.count
+    else { return longer + shorter }
 
-  var result = [Int]()
+  var result: [Int] = []
   var carry = 0
-  for i in 0..<shorter.count {
-    let value = shorter[i] + longer[i] + carry
+  for i in 0..<shorter.digits.count {
+    let value = shorter.digits[i] + longer.digits[i] + carry
     result.append(value % 10)
     carry = value / 10
   }
 
-  for i in shorter.count..<longer.count {
-    let value = longer[i] + carry
+  for i in shorter.digits.count..<longer.digits.count {
+    let value = longer.digits[i] + carry
     result.append(value % 10)
     carry = value / 10
     if carry == 0 { break }
@@ -43,4 +43,3 @@ public func + (lhs: Natural, rhs: Natural) -> Natural {
 
   return Natural(digits: result)
 }
-

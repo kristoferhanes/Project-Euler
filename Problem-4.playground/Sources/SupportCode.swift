@@ -21,10 +21,6 @@ func palindromes(from from: Int, to: Int) -> [Int] {
   return pals
 }
 
-func max<T: Comparable>(xs: [T]) -> T? {
-  return xs.reduce(nil) { max, x in x > max ? x : max }
-}
-
 public func largestPalindrome(from from: Int, to: Int) -> Int? {
-  return max(palindromes(from: from, to: to))
+  return palindromes(from: from, to: to).maxElement()
 }
