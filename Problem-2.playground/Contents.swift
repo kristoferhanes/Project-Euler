@@ -6,7 +6,7 @@ func fibs() -> [Int] {
 
   for i in 2..<100 {
     let fib = result[i-1] + result[i-2]
-    if fib > 4_000_000 { break }
+    guard fib <= 4_000_000 else { break }
     result.append(fib)
   }
 
