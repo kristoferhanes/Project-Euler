@@ -1,12 +1,14 @@
 
-import Foundation
-
 func largestPalindromeProduct(from from: Int, to: Int) -> Int? {
 
   func isPalindrome(n: Int) -> Bool {
     let s = String(n)
-    let r = String(s.characters.reverse())
-    return s == r
+    func isPalindrome(start start: String.Index, end: String.Index) -> Bool {
+      guard start < end else { return true }
+      guard s[start] == s[end] else { return false }
+      return isPalindrome(start: start.successor(), end: end.predecessor())
+    }
+    return isPalindrome(start: s.startIndex, end: s.endIndex.predecessor())
   }
 
   var result: Int?
@@ -14,14 +16,12 @@ func largestPalindromeProduct(from from: Int, to: Int) -> Int? {
     for j in i...to {
       let product = i * j
       guard product > result else { continue }
-      if isPalindrome(product) {
-        result = product
-      }
+      guard isPalindrome(product) else { continue }
+      result = product
     }
   }
   return result
 }
-
 
 largestPalindromeProduct(from: 10, to: 99) == 9009
 let result = largestPalindromeProduct(from: 100, to: 999)
