@@ -1,6 +1,4 @@
 
-import UIKit
-
 
 primeAtIndex(6) == 13
 primeAtIndex(1) == 2
