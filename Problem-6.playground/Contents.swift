@@ -1,6 +1,4 @@
 
-import UIKit
-
 func sumOfSquares(xs: [Int]) -> Int {
   return xs.reduce(0) { sum, x in sum + (x * x) }
 }
