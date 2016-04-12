@@ -1,10 +1,9 @@
 
-
 import Foundation
 
 extension Set {
-  func map<U>(transform: Element->U) -> Set<U> {
-    var result = Set<U>()
+  func map<Mapped>(@noescape transform: Element->Mapped) -> Set<Mapped> {
+    var result = Set<Mapped>(minimumCapacity: count)
     for x in self {
       result.insert(transform(x))
     }
@@ -12,36 +11,38 @@ extension Set {
   }
 }
 
-func sqrt(number: Int) -> Int {
-  return Int(sqrt(Double(number)))
-}
+func factors(of number: Int) -> Set<Int> {
 
-func lowFactors(number: Int) -> Set<Int> {
-  var divisors = [Int](0...sqrt(number))
-  for divisor in divisors {
-    if divisor == 0 { continue }
-    if number % divisor != 0 {
+  func lowFactors(of number: Int) -> Set<Int> {
+
+    func sqrt(number: Int) -> Int {
+      return Int(Foundation.sqrt(Double(number)))
+    }
+
+    var divisors = [Int](0...sqrt(number))
+    for divisor in divisors where divisor != 0 && number % divisor != 0 {
       for i in divisor.stride(to: divisors.endIndex, by: divisor) {
         divisors[i] = 0
       }
     }
+    return Set(divisors).subtract([0])
   }
-  return Set(divisors).subtract([0])
-}
 
-func highFactors(number: Int, fromLowFactors factors: Set<Int>) -> Set<Int> {
-  return factors.map { number / $0 }
-}
+  func highFactors(of number: Int, fromLowFactors factors: Set<Int>) -> Set<Int> {
+    return factors.map { number / $0 }
+  }
 
-func factors(number: Int) -> Set<Int> {
-  let lf = lowFactors(number)
-  let hf = highFactors(number, fromLowFactors: lf)
+  let lf = lowFactors(of: number)
+  let hf = highFactors(of: number, fromLowFactors: lf)
   return lf.union(hf)
 }
 
-public func firstWith500Divisors(xs: AnyGenerator<Int>) -> Int? {
+public func firstValue(withDivisorCountGreaterThan divisorCount: Int,
+                                                   from xs: AnyGenerator<Int>) -> Int? {
   for x in xs {
-    if factors(x).count > 500 { return x }
+    if factors(of: x).count > divisorCount {
+      return x
+    }
   }
   return nil
 }
