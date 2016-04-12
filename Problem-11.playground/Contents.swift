@@ -27,8 +27,6 @@ struct Constants {
     01, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 01, 89, 19, 67, 48 ]
 }
 
-typealias Point = (x: Int, y: Int)
-
 public enum Direction {
   case Down
   case Right
@@ -37,11 +35,11 @@ public enum Direction {
 }
 
 extension Direction {
-  static let Values: [Direction] = [.Down, .Right, .Diagonal1, .Diagonal2]
+  static let allValues: [Direction] = [.Down, .Right, .Diagonal1, .Diagonal2]
 }
 
 extension Direction {
-  func adjVals(x x: Int, y: Int) -> [(Int,Int)] {
+  func adjCoordinates(x x: Int, y: Int) -> [(Int, Int)] {
     switch self {
     case Down:
       return [(x,y),(x,y+1),(x,y+2),(x,y+3)]
@@ -55,43 +53,42 @@ extension Direction {
   }
 }
 
-public struct Grid<T> {
-  let grid: [T]
+public struct Grid<Element> {
+  let grid: [Element]
 
   let cols: Int
   let rows: Int
 
-  init(cols: Int, rows: Int, xs: [T]) {
+  init(cols: Int, rows: Int, xs: [Element]) {
     self.cols = cols
     self.rows = rows
     grid = xs
   }
 
-  subscript(x: Int, y: Int) -> T? {
+  subscript(x: Int, y: Int) -> Element? {
 
-    func outOfRange(x: Int, _ y: Int) -> Bool {
+    func outOfRange(x x: Int, y: Int) -> Bool {
       if x < 0 || cols <= x { return true }
       if y < 0 || rows <= y { return true }
       return false
     }
 
-    if outOfRange(x, y) { return nil }
+    if outOfRange(x: x, y: y) { return nil }
     return grid[x * rows + y]
-  }
-
-  subscript(p: Point) -> T? {
-    return self[x: p.x, y: p.y]
   }
 }
 
-extension Grid {
-  var adjVals: [[T]] {
-    var result = [[T]]()
+extension Grid where Element: IntegerType {
+  var maxProduct: Element? {
+    var result: Element?
     for x in 0..<cols {
       for y in 0..<rows {
-        for direction in Direction.Values {
-          let adjs = direction.adjVals(x: x, y: y).flatMap{self[$0.0, $0.1]}
-          result.append(adjs)
+        for direction in Direction.allValues {
+          let product = direction.adjCoordinates(x: x, y: y)
+            .flatMap { self[$0.0, $0.1] }
+            .reduce(1, combine: *)
+          guard product > result else { continue }
+          result = product
         }
       }
     }
@@ -99,32 +96,7 @@ extension Grid {
   }
 }
 
-func maxProduct(grid: Grid<Int>) -> Int? {
+let grid = Grid(cols: Constants.Width, rows: Constants.Height, xs: Constants.NumberGrid)
 
-  func products(xss: [[Int]]) -> [Int] {
-    return xss.map { xs in xs.reduce(1, combine: *) }
-  }
-
-  return products(grid.adjVals).maxElement()
-}
-
-let grid = Grid(
-  cols: Constants.Width,
-  rows: Constants.Height,
-  xs: Constants.NumberGrid)
-
-let solution = maxProduct(grid)
+let solution = grid.maxProduct
 solution
-
-
-
-
-
-
-
-
-
-
-
-
-
