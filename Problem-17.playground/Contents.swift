@@ -1,9 +1,6 @@
-
-import UIKit
-
-func toDigits(n: Int) -> [Int] {
+func intToDigits(n: Int) -> [Int] {
   var n = n
-  var result = [Int]()
+  var result: [Int] = []
   while n > 0 {
     result.append(n % 10)
     n /= 10
@@ -11,18 +8,18 @@ func toDigits(n: Int) -> [Int] {
   return result
 }
 
-toDigits(12345) == [5,4,3,2,1]
+intToDigits(12345) == [5, 4, 3, 2, 1]
 
 
-func toWords(xs: [Int]) -> String {
+func digitsToWords(xs: [Int]) -> String {
   switch xs.count {
   case 1: return onesToWord(xs.first!)
   case 2: return twoDigitsToWords(xs[0]+xs[1]*10)
   case 3: return (xs.last != 0 ? onesToWord(xs.last!) + " hundred " : "")
     + (xs[0] == 0 && xs[1] == 0 ? "" : "and ")
-    + toWords([Int](xs.dropLast()))
+    + digitsToWords([Int](xs.dropLast()))
   case 4: return (xs.last != 0 ? onesToWord(xs.last!) + " thousand " : "")
-    + toWords([Int](xs.dropLast()))
+    + digitsToWords([Int](xs.dropLast()))
   default: return ""
   }
 }
@@ -77,41 +74,41 @@ func twoDigitsToWords(n: Int) -> String {
   switch n {
   case 0...9: return onesToWord(n)
   case 11...19: return teensToWord(n)
-  case 10...99 where n % 10 == 0:
-    return tensToWord(n/10*10)
-  case 10...99:
-    return "\(tensToWord(n/10*10))-\(onesToWord(n%10))"
+  case 10...99 where n % 10 == 0: return tensToWord(n/10*10)
+  case 10...99: return "\(tensToWord(n/10*10))-\(onesToWord(n%10))"
   default: fatalError("out of bounds")
   }
 }
 
+func intToWords(n: Int) -> String {
+  return digitsToWords(intToDigits(n))
+}
 
-toWords(toDigits(1042))
+intToWords(342) == "three hundred and forty-two"
+intToWords(115) == "one hundred and fifteen"
+intToWords(1042) == "one thousand and forty-two"
 
 
 func countLetters(s: String) -> Int {
-  return s.characters.reduce(0) { count, x in
-    switch x {
-    case "a"..."z", "A"..."Z": return count + 1
-    default: return count
-    }
+
+  func isLetter(char: Character) -> Bool {
+    return "a"..."z" ~= char || "A"..."Z" ~= char
   }
+
+  return s.characters.reduce(0) { count, char in isLetter(char) ? count+1 : count }
 }
 
 countLetters("three hundred and forty-two") == 23
 countLetters("one hundred and fifteen") == 20
 
-func letterCounter(xs: [Int]) -> Int {
-  return xs.map { countLetters(toWords(toDigits($0))) }.reduce(0, combine: +)
+func letterCounter(range: Range<Int>) -> Int {
+  return [Int](range)
+    .map { countLetters(intToWords($0)) }
+    .reduce(0, combine: +)
 }
 
-letterCounter([Int](1...5)) == 19
+letterCounter(1...5) == 19
 
 
-let solution = letterCounter([Int](1...1000))
+let solution = letterCounter(1...1000)
 solution
-
-
-
-
-
