@@ -1,6 +1,3 @@
-
-import UIKit
-
 typealias Year = Int
 
 enum Month: Int {
@@ -18,26 +15,8 @@ enum Month: Int {
   case Dec
 }
 
-extension Month: CustomStringConvertible {
-  var description: String {
-    switch self {
-    case .Jan: return "January"
-    case .Feb: return "Febuary"
-    case .Mar: return "March"
-    case .Apr: return "April"
-    case .May: return "May"
-    case .Jun: return "June"
-    case .Jul: return "July"
-    case .Aug: return "August"
-    case .Sep: return "September"
-    case .Oct: return "October"
-    case .Nov: return "November"
-    case .Dec: return "December"
-    }
-  }
-}
-
 extension Month {
+
   func numDaysForYear(year: Year) -> Int {
     switch self {
     case .Apr, .Jun, .Sep, .Nov: return 30
@@ -51,16 +30,17 @@ extension Month {
   }
 
   func firstWeekdayForYear(year: Year) -> Weekday {
-    struct Memo { static var weekdays = [Int:Weekday]() }
-
+    struct Memo { static var weekdays: [Int:Weekday] = [:] }
     let key = 13 * rawValue + year
     if let w = Memo.weekdays[key] { return w }
+
     if self == .Jan { return year.firstWeekday }
-    let result = lastMonth.firstWeekdayForYear(year)
-      .addDays(lastMonth.numDaysForYear(year))
+    let result = lastMonth.firstWeekdayForYear(year).addDays(lastMonth.numDaysForYear(year))
+
     Memo.weekdays[key] = result
     return result
   }
+
 }
 
 enum Weekday: Int {
@@ -73,21 +53,8 @@ enum Weekday: Int {
   case Sunday
 }
 
-extension Weekday: CustomStringConvertible {
-  var description: String {
-    switch self {
-    case .Monday: return "Monday"
-    case .Tuesday: return "Tuesday"
-    case .Wednesday: return "Wednesday"
-    case .Thursday: return "Thursday"
-    case .Friday: return "Friday"
-    case .Saturday: return "Saturday"
-    case .Sunday: return "Sunday"
-    }
-  }
-}
-
 extension Weekday {
+
   func addDays(n: Int) -> Weekday {
     return Weekday(rawValue: (rawValue + n) % 7)!
   }
@@ -95,9 +62,11 @@ extension Weekday {
   var isSunday: Bool {
     return self == .Sunday
   }
+
 }
 
 extension Year {
+
   var isLeapYear: Bool {
     return (self % 4 == 0 && (self % 100 != 0 || self % 400 == 0))
   }
@@ -107,36 +76,27 @@ extension Year {
   }
 
   var firstWeekday: Weekday {
-    struct Memo { static var firstDay = [Year:Weekday]() }
-
-    if let d = Memo.firstDay[self] { return d }
     if self == 1900 { return .Monday }
     let lastYear = self - 1
-    let day = lastYear.firstWeekday.addDays(lastYear.numberOfDays)
-    Memo.firstDay[self] = day
-    return day
+    return lastYear.firstWeekday.addDays(lastYear.numberOfDays)
   }
 
   var firstWeekdays: [Weekday] {
-    var result = [Weekday]()
-    for m in 0..<12 {
-      let month = Month(rawValue: m)!
-      result.append(month.firstWeekdayForYear(self))
-    }
-    return result
+    return (0..<12).map { Month(rawValue: $0)!.firstWeekdayForYear(self) }
   }
+
 }
 
 func startDays(ys: [Year]) -> [Weekday] {
   return ys.flatMap { $0.firstWeekdays }
 }
 
-func firstSundays(ds: [Weekday]) -> [Weekday] {
+func sundays(ds: [Weekday]) -> [Weekday] {
   return ds.filter { $0.isSunday }
 }
 
 func firstSundaysInYears(ys: [Year]) -> Int {
-  return firstSundays(startDays(ys)).count
+  return sundays(startDays(ys)).count
 }
 
 
@@ -144,13 +104,4 @@ let years = [Year](1901...2000)
 
 
 let solution = firstSundaysInYears(years)
-print(solution)
-
-
-
-
-
-
-
-
-
+solution
