@@ -1,111 +1,66 @@
-
-
-
-
 import Foundation
 
-func memoize<T: Hashable, U>(body: ((T)->U,T)->U) -> (T)->U {
-  var memo = [T:U]()
-  var result: ((T)->U)!
-  result = { x in
-    if let q = memo[x] { return q }
-    let r = body(result, x)
-    memo[x] = r
-    return r
-  }
-  return result
-}
-
-private func sum(set: Set<Int>) -> Int {
-  return set.reduce(0, combine: +)
-}
-
-extension Int {
-  func isDivisibleBy(number: Int) -> Bool {
-    return self % number == 0
-  }
-}
-
-private func lowFactorsOf(number: Int, _ remaining: ArraySlice<Int>) -> Set<Int> {
-  if remaining.isEmpty { return [] }
-  let (divisor, tail) = (remaining.first!, remaining[1..<remaining.count])
-  return number.isDivisibleBy(divisor)
-    ? lowFactorsOf(number, tail).union([divisor])
-    : lowFactorsOf(number, ArraySlice(tail.filter { x in !x.isDivisibleBy(divisor) }))
-}
-
-private func highFactorsOf(number: Int, fromLowFactors factors: Set<Int>) -> Set<Int> {
-  return Set(factors.map { x in number / x })
-}
-
-private func sqrt(number: Int) -> Int {
-  return Int(sqrt(Double(number)))
-}
-
-private func getFactors(number: Int) -> Set<Int> {
-  let lowFactors = lowFactorsOf(number, ArraySlice(1...sqrt(number)))
-  let highFactors = highFactorsOf(number, fromLowFactors: lowFactors)
-  return lowFactors.union(highFactors)
-}
-
-let factorsOf = memoize { _, x in getFactors(x) }
-let sumOfFactors = memoize { _, x in sum(factorsOf(x)) }
-
-public func isPerfect(number: Int) -> Bool {
-  if !isNaturalNumber(number) { return false }
-  return sumOfFactors(number) - number == number
-}
-
-public func isAbundant(number: Int) -> Bool {
-  if !isNaturalNumber(number) { return false }
-  return sumOfFactors(number) - number > number
-}
-
-public func isDeficient(number: Int) -> Bool {
-  if !isNaturalNumber(number) { return false }
-  return sumOfFactors(number) - number < number
-}
-
-public enum NumberClassifier: CustomStringConvertible {
-
-  case Perfect(Int)
-  case Abundant(Int)
-  case Deficient(Int)
-  case Nonnatural(Int)
-
-  init(_ number: Int) {
-    if isPerfect(number) {
-      self = .Perfect(number)
-    } else if isAbundant(number) {
-      self = .Abundant(number)
-    } else if isDeficient(number) {
-      self = .Deficient(number)
-    } else {
-      self = .Nonnatural(number)
+extension Set {
+  func map<Mapped>(@noescape transform: Element->Mapped) -> Set<Mapped> {
+    var result = Set<Mapped>(minimumCapacity: count)
+    for x in self {
+      result.insert(transform(x))
     }
+    return result
   }
-
-  public var description: String {
-    switch self {
-    case .Perfect(let value):
-      return "\(value) is perfect"
-    case .Abundant(let value):
-      return "\(value) is abundant"
-    case .Deficient(let value):
-      return "\(value) is deficient"
-    case .Nonnatural(let value):
-      return "\(value) is nonnatural"
-    }
-  }
-
 }
 
-private func isNaturalNumber(number: Int) -> Bool {
+func factors(of number: Int) -> Set<Int> {
+
+  func lowFactors(of number: Int) -> Set<Int> {
+
+    func sqrt(number: Int) -> Int {
+      return Int(Foundation.sqrt(Double(number)))
+    }
+
+    var divisors = [Int](0...sqrt(number))
+    for divisor in divisors where divisor != 0 && number % divisor != 0 {
+      for i in divisor.stride(to: divisors.endIndex, by: divisor) {
+        divisors[i] = 0
+      }
+    }
+    return Set(divisors).subtract([0])
+  }
+
+  func highFactors(of number: Int, fromLowFactors factors: Set<Int>) -> Set<Int> {
+    return factors.map { number / $0 }
+  }
+
+  let lf = lowFactors(of: number)
+  let hf = highFactors(of: number, fromLowFactors: lf)
+  return lf.union(hf)
+}
+
+func sumOfFactors(of n: Int) -> Int {
+  return factors(of: n).reduce(0,combine: +)
+}
+
+func isNaturalNumber(number: Int) -> Bool {
   return number > 0
 }
 
+public func isPerfect(number: Int) -> Bool {
+  guard isNaturalNumber(number) else { return false }
+  return sumOfFactors(of: number) - number == number
+}
+
+public func isAbundant(number: Int) -> Bool {
+  guard isNaturalNumber(number) else { return false }
+  return sumOfFactors(of: number) - number > number
+}
+
+public func isDeficient(number: Int) -> Bool {
+  guard isNaturalNumber(number) else { return false }
+  return sumOfFactors(of: number) - number < number
+}
+
 public func pairSums(xs: [Int]) -> Set<Int> {
-  var result = Set<Int>()
+  var result: Set<Int> = []
   for i in 0..<xs.endIndex {
     for j in i..<xs.endIndex {
       result.insert(xs[j] + xs[i])
@@ -113,7 +68,3 @@ public func pairSums(xs: [Int]) -> Set<Int> {
   }
   return result
 }
-
-
-
-
