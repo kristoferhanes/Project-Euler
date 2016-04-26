@@ -1,8 +1,8 @@
 
-public struct Natural {
-  public let digits: [Int]
+struct Natural {
+  private var digits: [Int]
 
-  public init(_ value: Int) {
+  init(_ value: Int) {
     var value = value
     var initDigits: [Int] = []
     repeat {
@@ -12,12 +12,16 @@ public struct Natural {
     digits = initDigits
   }
 
-  public init(digits: [Int]) {
+  init(digits: [Int]) {
     self.digits = digits
+  }
+
+  var digitCount: Int {
+    return digits.count
   }
 }
 
-public func + (shorter: Natural, longer: Natural) -> Natural {
+func + (shorter: Natural, longer: Natural) -> Natural {
   guard shorter.digits.count <= longer.digits.count
     else { return longer + shorter }
 
@@ -42,4 +46,21 @@ public func + (shorter: Natural, longer: Natural) -> Natural {
   }
 
   return Natural(digits: result)
+}
+
+func fibs(index: Int) -> Natural {
+  struct Memo { static var fibs = [1:Natural(1), 2:Natural(1)] }
+  if let f = Memo.fibs[index] { return f }
+  for i in 3...index where Memo.fibs[i] == nil {
+    Memo.fibs[i] = Memo.fibs[i-1]! + Memo.fibs[i-2]!
+  }
+  return Memo.fibs[index]!
+}
+
+public func firstFibIndex(withDigitCount digitCountGoal: Int) -> Int {
+  for i in 1..<Int.max {
+    let digitCount = fibs(i).digitCount
+    guard digitCount < digitCountGoal else { return i }
+  }
+  return 0
 }
