@@ -1,14 +1,6 @@
 
-import UIKit
+permutions(of: "012") == ["012", "021", "102", "120", "201", "210"]
 
-let p = permutions([0,1,2])
-  .map { xs in xs.map { x in Character("\(x)") } }
-  .map { xs in String(xs) }
-  .sort(<)
+let perms = permutions(of: "0123456789")
 
 perms[999999]
-
-
-
-
-
