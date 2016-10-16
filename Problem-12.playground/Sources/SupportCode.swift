@@ -2,7 +2,7 @@
 import Foundation
 
 extension Set {
-  func map<Mapped>(@noescape transform: Element->Mapped) -> Set<Mapped> {
+  func map<Mapped>(_ transform: (Element) -> Mapped) -> Set<Mapped> {
     var result = Set<Mapped>(minimumCapacity: count)
     for x in self {
       result.insert(transform(x))
@@ -15,17 +15,17 @@ func factors(of number: Int) -> Set<Int> {
 
   func lowFactors(of number: Int) -> Set<Int> {
 
-    func sqrt(number: Int) -> Int {
+    func sqrt(_ number: Int) -> Int {
       return Int(Foundation.sqrt(Double(number)))
     }
 
     var divisors = [Int](0...sqrt(number))
     for divisor in divisors where divisor != 0 && number % divisor != 0 {
-      for i in divisor.stride(to: divisors.endIndex, by: divisor) {
+      for i in stride(from: divisor, to: divisors.endIndex, by: divisor) {
         divisors[i] = 0
       }
     }
-    return Set(divisors).subtract([0])
+    return Set(divisors).subtracting([0])
   }
 
   func highFactors(of number: Int, fromLowFactors factors: Set<Int>) -> Set<Int> {
@@ -38,7 +38,7 @@ func factors(of number: Int) -> Set<Int> {
 }
 
 public func firstValue(withDivisorCountGreaterThan divisorCount: Int,
-                                                   from xs: AnyGenerator<Int>) -> Int? {
+                                                   from xs: AnyIterator<Int>) -> Int? {
   for x in xs {
     if factors(of: x).count > divisorCount {
       return x
@@ -47,7 +47,7 @@ public func firstValue(withDivisorCountGreaterThan divisorCount: Int,
   return nil
 }
 
-public var triangleNums: AnyGenerator<Int> = AnyGenerator {
+public var triangleNums: AnyIterator<Int> = AnyIterator {
   struct State {
     static var index = 1
     static var next = 0

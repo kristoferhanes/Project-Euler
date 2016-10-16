@@ -1,10 +1,10 @@
 
-func sumOfSquares(xs: [Int]) -> Int {
+func sumOfSquares(_ xs: [Int]) -> Int {
   return xs.reduce(0) { sum, x in sum + (x * x) }
 }
 
-func squareOfSum(xs: [Int]) -> Int {
-  let sum = xs.reduce(0, combine: +)
+func squareOfSum(_ xs: [Int]) -> Int {
+  let sum = xs.reduce(0, +)
   return sum * sum
 }
 

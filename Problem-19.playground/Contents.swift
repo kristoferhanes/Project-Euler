@@ -1,107 +1,104 @@
-typealias Year = Int
-
 enum Month: Int {
-  case Jan
-  case Feb
-  case Mar
-  case Apr
-  case May
-  case Jun
-  case Jul
-  case Aug
-  case Sep
-  case Oct
-  case Nov
-  case Dec
+  case january
+  case february
+  case march
+  case april
+  case may
+  case june
+  case july
+  case august
+  case september
+  case october
+  case november
+  case december
 }
 
 extension Month {
 
-  func numDaysForYear(year: Year) -> Int {
+  func days(in year: Year) -> Int {
     switch self {
-    case .Apr, .Jun, .Sep, .Nov: return 30
-    case .Jan, .Mar, .May, .Jul, .Aug, .Oct, .Dec: return 31
-    case .Feb: return year.isLeapYear ? 29 : 28
+    case .january, .march, .may, .july:        return 31
+    case .august, .october, .december:         return 31
+    case .april, .june, .september, .november: return 30
+    case .february where year.isLeapYear:      return 29
+    case .february:                            return 28
     }
   }
 
-  var lastMonth: Month {
-    return self == .Jan ? .Dec : Month(rawValue: rawValue-1)!
+  var previous: Month {
+    return self == .january ? .december : Month(rawValue: rawValue-1)!
   }
 
-  func firstWeekdayForYear(year: Year) -> Weekday {
+  func firstWeekday(in year: Year) -> Weekday {
     struct Memo { static var weekdays: [Int:Weekday] = [:] }
-    let key = 13 * rawValue + year
+    let key = 13 * rawValue + year.rawValue
     if let w = Memo.weekdays[key] { return w }
 
-    if self == .Jan { return year.firstWeekday }
-    let result = lastMonth.firstWeekdayForYear(year).addDays(lastMonth.numDaysForYear(year))
+    if self == .january { return year.firstDay }
+    let result = previous.firstWeekday(in: year).adding(days: previous.days(in: year))
 
     Memo.weekdays[key] = result
     return result
   }
-
+  
 }
 
 enum Weekday: Int {
-  case Monday
-  case Tuesday
-  case Wednesday
-  case Thursday
-  case Friday
-  case Saturday
-  case Sunday
+  case monday
+  case tuesday
+  case wednesday
+  case thursday
+  case friday
+  case saturday
+  case sunday
 }
 
 extension Weekday {
 
-  func addDays(n: Int) -> Weekday {
+  func adding(days n: Int) -> Weekday {
     return Weekday(rawValue: (rawValue + n) % 7)!
   }
 
   var isSunday: Bool {
-    return self == .Sunday
+    return self == .sunday
   }
 
+}
+
+struct Year {
+  var rawValue: Int
 }
 
 extension Year {
 
   var isLeapYear: Bool {
-    return (self % 4 == 0 && (self % 100 != 0 || self % 400 == 0))
+    return (rawValue % 4 == 0 && (rawValue % 100 != 0 || rawValue % 400 == 0))
   }
 
-  var numberOfDays: Int {
+  var days: Int {
     return isLeapYear ? 366 : 365
   }
 
-  var firstWeekday: Weekday {
-    if self == 1900 { return .Monday }
-    let lastYear = self - 1
-    return lastYear.firstWeekday.addDays(lastYear.numberOfDays)
+  var firstDay: Weekday {
+    if rawValue == 1900 { return .monday }
+    let lastYear = Year(rawValue: rawValue - 1)
+    return lastYear.firstDay.adding(days: lastYear.days)
   }
 
-  var firstWeekdays: [Weekday] {
-    return (0..<12).map { Month(rawValue: $0)!.firstWeekdayForYear(self) }
+  var firstDaysOfMonths: [Weekday] {
+    return (0..<12).flatMap { Month(rawValue: $0)?.firstWeekday(in: self) }
   }
 
 }
 
-func startDays(ys: [Year]) -> [Weekday] {
-  return ys.flatMap { $0.firstWeekdays }
+extension Sequence where Iterator.Element == Year {
+  var firstSundays: Int {
+    return flatMap { $0.firstDaysOfMonths }.filter { $0.isSunday }.count
+  }
 }
 
-func sundays(ds: [Weekday]) -> [Weekday] {
-  return ds.filter { $0.isSunday }
-}
+let years = (1901...2000).map(Year.init)
 
-func firstSundaysInYears(ys: [Year]) -> Int {
-  return sundays(startDays(ys)).count
-}
-
-
-let years = [Year](1901...2000)
-
-
-let solution = firstSundaysInYears(years)
+let solution = years.firstSundays
 solution
+

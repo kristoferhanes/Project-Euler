@@ -1,11 +1,11 @@
 
 import Foundation
 
-public func primeAtIndex(index: Int) -> Int {
+public func prime(at index: Int) -> Int {
 
-  func isPrime(n: Int) -> Bool {
+  func isPrime(_ n: Int) -> Bool {
 
-    func sqrt(x: Int) -> Int {
+    func sqrt(_ x: Int) -> Int {
       return Int(Foundation.sqrt(Double(x)))
     }
 
@@ -14,7 +14,7 @@ public func primeAtIndex(index: Int) -> Int {
     var divisors = [Int](2...sqrt(n))
     for divisor in divisors where divisor != 0 {
       guard n % divisor != 0 else { return false }
-      for i in divisor.stride(to: divisors.endIndex+2, by: divisor) {
+      for i in stride(from: divisor, to: divisors.endIndex + 2, by: divisor) {
         divisors[i-2] = 0
       }
     }

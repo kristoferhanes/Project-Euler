@@ -3,11 +3,11 @@ import Foundation
 
 func largestPrimeFactor(of n: Int) -> Int {
 
-  func sqrt(n: Int) -> Int {
+  func sqrt(_ n: Int) -> Int {
     return Int(Foundation.sqrt(Double(n)))
   }
 
-  func isPrime(n: Int) -> Bool {
+  func isPrime(_ n: Int) -> Bool {
     for divisor in 2...sqrt(n) {
       if n % divisor == 0 {
         return false

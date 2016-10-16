@@ -3,14 +3,14 @@ let digits = "731671765313306249192251196744265747423553491949349698352031277450
   .characters.map { Int(String($0))! }
 
 
-func adjDigitsMaxProduct(xs: [Int], length: Int) -> Int? {
-  var result: Int?
+func adjDigitsMaxProduct(_ xs: [Int], length: Int) -> Int? {
+  var result = Int.min
   for i in xs.startIndex..<xs.endIndex-length {
-    let product = xs[i..<i+length].reduce(1, combine: *)
+    let product = xs[i..<i+length].reduce(1, *)
     guard product > result else { continue }
     result = product
   }
-  return result
+  return result == Int.min ? nil : result
 }
 
 

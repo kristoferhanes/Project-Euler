@@ -1,4 +1,4 @@
-func double(xs: [Int]) -> [Int] {
+func double(_ xs: [Int]) -> [Int] {
   var xs = xs
   var carry = 0
   for i in xs.indices {
@@ -10,8 +10,7 @@ func double(xs: [Int]) -> [Int] {
   return xs
 }
 
-
-func powersOfTwo(n: Int) -> [Int] {
+func powersOfTwo(_ n: Int) -> [Int] {
   var result = [1]
   for _ in 1...n {
     result = double(result)
@@ -20,5 +19,5 @@ func powersOfTwo(n: Int) -> [Int] {
 }
 
 public func sumOfDigits(forPowerOfTwo n: Int) -> Int {
-  return powersOfTwo(n).reduce(0, combine: +)
+  return powersOfTwo(n).reduce(0, +)
 }

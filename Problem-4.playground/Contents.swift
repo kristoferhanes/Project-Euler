@@ -1,17 +1,17 @@
 
-func largestPalindromeProduct(from from: Int, to: Int) -> Int? {
+func largestPalindromeProduct(from: Int, to: Int) -> Int? {
 
-  func isPalindrome(n: Int) -> Bool {
-    let s = String(n)
-    func isPalindrome(start start: String.Index, end: String.Index) -> Bool {
+  func isPalindrome(_ n: Int) -> Bool {
+    let s = String(n).characters
+    func isPalindrome(start: String.Index, end: String.Index) -> Bool {
       guard start < end else { return true }
       guard s[start] == s[end] else { return false }
-      return isPalindrome(start: start.successor(), end: end.predecessor())
+      return isPalindrome(start: s.index(after: start), end: s.index(before: end))
     }
-    return isPalindrome(start: s.startIndex, end: s.endIndex.predecessor())
+    return isPalindrome(start: s.startIndex, end: s.index(before: s.endIndex))
   }
 
-  var result: Int?
+  var result = Int.min
   for i in from...to {
     for j in i...to {
       let product = i * j
@@ -20,7 +20,7 @@ func largestPalindromeProduct(from from: Int, to: Int) -> Int? {
       result = product
     }
   }
-  return result
+  return result == Int.min ? nil : result
 }
 
 largestPalindromeProduct(from: 10, to: 99) == 9009

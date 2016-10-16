@@ -13,5 +13,5 @@ func fibs() -> [Int] {
   return result
 }
 
-let sum = fibs().filter { $0 % 2 == 0 }.reduce(0, combine: +)
+let sum = fibs().filter { $0 % 2 == 0 }.reduce(0, +)
 sum

@@ -1,31 +1,24 @@
-
-struct LongInt {
+struct BigInt {
   var digits: [Int]
 }
 
-extension LongInt {
-
+extension BigInt {
   init(_ value: Int) {
-    digits = LongInt.split(value)
-  }
 
-  static func split(n: Int) -> [Int] {
-    var n = n
-    var result: [Int] = []
-    while n > 0 {
-      result.append(n % 10)
-      n /= 10
+    func digits(_ n: Int) -> [Int] {
+      var n = n
+      var result: [Int] = []
+      while n > 0 {
+        result.append(n % 10)
+        n /= 10
+      }
+      return result
     }
-    return result
+    
+    self.digits = digits(value)
   }
 
-  func times(n: Int) -> LongInt {
-    var copy = self
-    copy.timesInPlace(n)
-    return copy
-  }
-
-  mutating func timesInPlace(n: Int) {
+  mutating func timesInPlace(_ n: Int) {
     var carry = 0
     for i in digits.indices {
       let product = digits[i] * n + carry
@@ -37,21 +30,25 @@ extension LongInt {
       carry /= 10
     }
   }
-
 }
 
-func factorial(n: Int) -> LongInt {
-  var result = LongInt(2)
-  for x in 3...n {
-    result.timesInPlace(x)
+extension Int {
+  var factorial: BigInt {
+    var result = BigInt(2)
+    for x in 3...self {
+      result.timesInPlace(x)
+    }
+    return result
   }
-  return result
 }
 
-LongInt.split(12345).reverse() == [1,2,3,4,5]
-LongInt(999).times(2).digits.reverse() == [1,9,9,8]
-factorial(10).digits.reduce(0, combine: +) == 27
+extension Sequence where Iterator.Element == Int {
+  var sum: Int {
+    return reduce(0, +)
+  }
+}
 
+10.factorial.digits.sum == 27
 
-let solution = factorial(100).digits.reduce(0, combine: +)
+let solution = 100.factorial.digits.sum
 solution

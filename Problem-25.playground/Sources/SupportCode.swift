@@ -1,6 +1,6 @@
 
 struct Natural {
-  private var digits: [Int]
+  fileprivate var digits: [Int]
 
   init(_ value: Int) {
     var value = value
@@ -48,7 +48,7 @@ func + (shorter: Natural, longer: Natural) -> Natural {
   return Natural(digits: result)
 }
 
-func fibs(index: Int) -> Natural {
+func fibs(_ index: Int) -> Natural {
   struct Memo { static var fibs = [1:Natural(1), 2:Natural(1)] }
   if let f = Memo.fibs[index] { return f }
   for i in 3...index where Memo.fibs[i] == nil {

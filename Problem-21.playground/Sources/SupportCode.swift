@@ -7,38 +7,44 @@ extension Int {
 
     let lowDivs = lowDivisors
     let highDivs = highDivisors(lowDivs)
-    let result = Set(lowDivs).union(highDivs).subtract([self])
+    let result = Set(lowDivs).union(highDivs).subtracting([self])
 
     Memo.divs[self] = result
     return result
   }
 
   var lowDivisors: [Int] {
-    var sieve = [Int](0...Int(sqrt(Double(self))))
-    for x in sieve where x != 0 && self % x != 0 {
-      for i in x.stride(to: sieve.endIndex, by: x) {
-        sieve[i] = 0
+
+    func sqrt(_ x: Int) -> Int {
+      return Int(Foundation.sqrt(Double(x)))
+    }
+    
+    var divisors = [Int](0...sqrt(self))
+    for divisor in divisors where divisor != 0 {
+      guard self % divisor != 0 else { continue }
+      for i in Swift.stride(from: divisor, to: divisors.endIndex, by: divisor) {
+        divisors[i] = 0
       }
     }
-    return sieve.filter { $0 != 0 }
+    return divisors.filter { $0 != 0 }
   }
 
-  func highDivisors(lds: [Int]) -> [Int] {
+  func highDivisors(_ lds: [Int]) -> [Int] {
     return lds.map { self / $0 }
   }
 }
 
-public func areAmicable(a: Int, _ b: Int) -> Bool {
-  let sumA = a.properDivisors.reduce(0, combine: +)
-  let sumB = b.properDivisors.reduce(0, combine: +)
+public func areAmicable(_ a: Int, _ b: Int) -> Bool {
+  let sumA = a.properDivisors.reduce(0, +)
+  let sumB = b.properDivisors.reduce(0, +)
   return sumA == b && sumB == a
 }
 
-public func amicableNumbers(inRange range: Range<Int>) -> [Int] {
+public func amicableNumbers(in array: [Int]) -> [Int] {
   var result: [Int] = []
-  for i in range.startIndex..<range.endIndex-1 {
-    for j in i+1..<range.endIndex {
-      if areAmicable(i, j) { result += [i,j] }
+  for i in array.indices {
+    for j in i+1..<array.endIndex where areAmicable(i, j) {
+      result += [i,j]
     }
   }
   return result

@@ -7,5 +7,5 @@ let abundants = numbers.filter(isAbundant)
 let sums = pairSums(abundants)
 let nonSums = numbers.filter { !sums.contains($0) }
 
-let solution = nonSums.reduce(0, combine: +)
+let solution = nonSums.reduce(0, +)
 solution

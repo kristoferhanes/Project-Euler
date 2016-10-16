@@ -1,8 +1,8 @@
 
 
-primeAtIndex(6) == 13
-primeAtIndex(1) == 2
-primeAtIndex(4) == 7
+prime(at: 6) == 13
+prime(at: 1) == 2
+prime(at: 4) == 7
 
 
-primeAtIndex(10_001)
+prime(at: 10_001)

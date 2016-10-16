@@ -2,9 +2,9 @@
 import UIKit
 
 struct Constants {
-  static let Width = 20
-  static let Height = 20
-  static let NumberGrid = [
+  static let width = 20
+  static let height = 20
+  static let numberGrid = [
     08, 02, 22, 97, 38, 15, 00, 40, 00, 75, 04, 05, 07, 78, 52, 12, 50, 77, 91, 08,
     49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48, 04, 56, 62, 00,
     81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30, 03, 49, 13, 36, 65,
@@ -28,27 +28,23 @@ struct Constants {
 }
 
 public enum Direction {
-  case Down
-  case Right
-  case Diagonal1
-  case Diagonal2
+  case down
+  case right
+  case upDiagonal
+  case downDiagonal
 }
 
 extension Direction {
-  static let allValues: [Direction] = [.Down, .Right, .Diagonal1, .Diagonal2]
+  static let allValues: [Direction] = [.down, .right, .upDiagonal, .downDiagonal]
 }
 
 extension Direction {
-  func adjCoordinates(x x: Int, y: Int) -> [(Int, Int)] {
+  func adjCoordinates(x: Int, y: Int) -> [(Int, Int)] {
     switch self {
-    case Down:
-      return [(x,y),(x,y+1),(x,y+2),(x,y+3)]
-    case Right:
-      return [(x,y),(x+1,y),(x+2,y),(x+3,y)]
-    case Diagonal1:
-      return [(x,y),(x+1,y+1),(x+2,y+2),(x+3,y+3)]
-    case Diagonal2:
-      return [(x,y),(x-1,y+1),(x-2,y+2),(x-3,y+3)]
+    case .down:         return [(x,y),   (x,y+1),   (x,y+2),   (x,y+3)]
+    case .right:        return [(x,y),   (x+1,y),   (x+2,y),   (x+3,y)]
+    case .upDiagonal:   return [(x,y), (x+1,y+1), (x+2,y+2), (x+3,y+3)]
+    case .downDiagonal: return [(x,y), (x-1,y+1), (x-2,y+2), (x-3,y+3)]
     }
   }
 }
@@ -67,10 +63,8 @@ public struct Grid<Element> {
 
   subscript(x: Int, y: Int) -> Element? {
 
-    func outOfRange(x x: Int, y: Int) -> Bool {
-      if x < 0 || cols <= x { return true }
-      if y < 0 || rows <= y { return true }
-      return false
+    func outOfRange(x: Int, y: Int) -> Bool {
+      return x < 0 || cols <= x || y < 0 || rows <= y
     }
 
     if outOfRange(x: x, y: y) { return nil }
@@ -78,16 +72,14 @@ public struct Grid<Element> {
   }
 }
 
-extension Grid where Element: IntegerType {
+extension Grid where Element: Integer {
   var maxProduct: Element? {
     var result: Element?
     for x in 0..<cols {
       for y in 0..<rows {
         for direction in Direction.allValues {
-          let product = direction.adjCoordinates(x: x, y: y)
-            .flatMap { self[$0.0, $0.1] }
-            .reduce(1, combine: *)
-          guard product > result else { continue }
+          let product = direction.adjCoordinates(x: x, y: y).flatMap { self[$0.0, $0.1] }.reduce(1, *)
+          guard result == nil || product > result! else { continue }
           result = product
         }
       }
@@ -96,7 +88,7 @@ extension Grid where Element: IntegerType {
   }
 }
 
-let grid = Grid(cols: Constants.Width, rows: Constants.Height, xs: Constants.NumberGrid)
+let grid = Grid(cols: Constants.width, rows: Constants.height, xs: Constants.numberGrid)
 
 let solution = grid.maxProduct
 solution

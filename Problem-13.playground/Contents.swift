@@ -104,5 +104,5 @@ let numbers: [Double] = [
   53503534226472524250874054075591789781264330331690]
 
 
-let sum = numbers.reduce(0, combine: +)
+let sum = numbers.reduce(0, +)
 sum

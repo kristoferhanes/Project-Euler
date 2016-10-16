@@ -1,19 +1,18 @@
 import Foundation
 
-func names(from file: NSURL) -> [String] {
+func names(from file: URL) -> [String] {
 
-  func removeQuotes(from s: String) -> String {
+  func withoutQuotes(_ s: String) -> String {
     guard s.characters.count >= 2 else { return s }
     guard s.characters.first == "\"" && s.characters.last == "\"" else { return s }
-    let range = s.startIndex.advancedBy(1)..<s.startIndex.advancedBy(s.characters.count-1)
-    return s.substringWithRange(range)
+    return s.substring(with: s.index(after: s.startIndex)..<s.index(before: s.endIndex))
   }
   
-  guard let contents = try? String(contentsOfURL: file) else { return [] }
-  return contents.characters.split(",").map(String.init).map(removeQuotes)
+  guard let contents = try? String(contentsOf: file) else { return [] }
+  return contents.characters.split(separator: ",").map(String.init).map(withoutQuotes)
 }
 
-func alphaValue(s: String) -> Int {
+func alphaValue(_ s: String) -> Int {
 
   func charValue(c: Character) -> Int {
     struct Constant { static let AlphaOffset = 64 }
@@ -26,16 +25,15 @@ func alphaValue(s: String) -> Int {
     return result
   }
 
-  return s.uppercaseString.characters.map(charValue).reduce(0, combine: +)
+  return s.uppercased().characters.map(charValue).reduce(0, +)
 }
 
 alphaValue("colin") == 53
 
-let file = [#FileReference(fileReferenceLiteral: "names.txt")#]
+let file = #fileLiteral(resourceName: "names.txt")
 
-let solution = names(from: file).sort().enumerate()
-  .map { ($0.index+1) * alphaValue($0.element) }
-  .reduce(0, combine: +)
-
+let solution = names(from: file).sorted().enumerated()
+  .map { ($0.offset+1) * alphaValue($0.element) }
+  .reduce(0, +)
 
 solution

@@ -16,52 +16,51 @@ let triangle = [
   04, 62, 98, 27, 23, 09, 70, 98, 73, 93, 38, 53, 60, 04, 23]
 
 
-func row(atIndex index: Int, fromTriangle triangle: [Int]) -> ArraySlice<Int> {
+func row(at index: Int, in triangle: [Int]) -> ArraySlice<Int> {
 
-  func startIndex(ofRow row: Int) -> Int {
+  func startIndex(of row: Int) -> Int {
     guard row > 0 else { return 0 }
-    return startIndex(ofRow: row-1) + row
+    return startIndex(of: row-1) + row
   }
 
-  let start = startIndex(ofRow: index)
+  let start = startIndex(of: index)
   let end = start + index
   return triangle[start...end]
 }
 
-row(atIndex: 0, fromTriangle: triangle) == [75]
-row(atIndex: 1, fromTriangle: triangle) == [95, 64]
-row(atIndex: 2, fromTriangle: triangle) == [17, 47, 82]
-row(atIndex: 3, fromTriangle: triangle) == [18, 35, 87, 10]
+row(at: 0, in: triangle) == [75]
+row(at: 1, in: triangle) == [95, 64]
+row(at: 2, in: triangle) == [17, 47, 82]
+row(at: 3, in: triangle) == [18, 35, 87, 10]
 
+func mergeSumWithGreaterChild(from row: ArraySlice<Int>, with children: [Int]) -> [Int] {
 
-func mergeSumWithGreaterChild(row: ArraySlice<Int>, children: [Int]) -> [Int] {
-
-  func leftChild(ofIndex index: Int) -> Int {
+  func leftChild(of index: Int) -> Int {
     return children[index]
   }
 
-  func rightChild(ofIndex index: Int) -> Int {
+  func rightChild(of index: Int) -> Int {
     return children[index + 1]
   }
 
-  func sumWithGreaterChild(index index: Int, value: Int) -> Int {
-    return value + max(leftChild(ofIndex: index), rightChild(ofIndex: index))
+  func sumWithGreaterChild(index: Int, value: Int) -> Int {
+    return value + max(leftChild(of: index), rightChild(of: index))
   }
 
-  return row.enumerate().map { sumWithGreaterChild(index: $0, value: $1) }
+  return row.enumerated().map(sumWithGreaterChild)
 }
 
-mergeSumWithGreaterChild([2, 4, 6], children: [8, 5, 9, 3]) == [10, 13, 15]
+mergeSumWithGreaterChild(from: [2, 4, 6], with: [8, 5, 9, 3]) == [10, 13, 15]
 
-func maxSumOfPaths(inTriangle triangle: [Int], withHeight height: Int) -> Int {
+func maxSumOfPaths(in triangle: [Int], height: Int) -> Int {
 
-  func maxSumOfPaths(rowIndex: Int, accum: [Int]) -> Int {
-    guard rowIndex > 0 else { return accum[0] }
-    let currentRow = row(atIndex: rowIndex - 1, fromTriangle: triangle)
-    return maxSumOfPaths(rowIndex - 1, accum: mergeSumWithGreaterChild(currentRow, children: accum))
+  func maxSumOfPaths(index: Int, accum: [Int]) -> Int {
+    guard index > 0 else { return accum[0] }
+    let currentRow = row(at: index - 1, in: triangle)
+    return maxSumOfPaths(index: index - 1, accum: mergeSumWithGreaterChild(from: currentRow, with: accum))
   }
 
-  return maxSumOfPaths(height - 1, accum: [Int](row(atIndex: height - 1, fromTriangle: triangle)))
+  return maxSumOfPaths(index: height - 1, accum: Array(row(at: height - 1, in: triangle)))
 }
 
 let smallTriangle = [
@@ -71,7 +70,7 @@ let smallTriangle = [
   8, 5, 9, 3
 ]
 
-maxSumOfPaths(inTriangle: smallTriangle, withHeight: 4) == 23
+maxSumOfPaths(in: smallTriangle, height: 4) == 23
 
-let solution = maxSumOfPaths(inTriangle: triangle, withHeight: 15)
+let solution = maxSumOfPaths(in: triangle, height: 15)
 solution
